@@ -1,5 +1,8 @@
 require 'formula'
 
+# for UTF-8-MAC filename problem
+def with_unicode_path?; build.include? 'unicode-path'; end
+
 class Zsh < Formula
   homepage 'http://www.zsh.org/'
   url 'http://downloads.sourceforge.net/project/zsh/zsh/zsh-5.0.5.tar.bz2'
@@ -9,7 +12,23 @@ class Zsh < Formula
   depends_on 'gdbm'
   depends_on 'pcre'
 
-  option 'disable-etcdir', 'Disable the reading of Zsh rc files in /etc'
+  skip_clean :all
+
+  def options
+    [
+      ['--disable-etcdir', 'Disable the reading of Zsh rc files in /etc'],
+      ['--unicode-path', 'Include support for OS X UTF-8-MAC filename'],
+    ]
+  end
+
+  def patches
+    # Patch for Zsh handling of OS X UTF-8-MAC filename.
+    if with_unicode_path?
+      return { :p1 =>
+        'https://gist.github.com/waltarix/1403346/raw/ba177e4e0044d16dca4f7b7f0d3888249ebe5951/zsh-utf8mac-completion.patch'
+      }
+    end
+  end
 
   def install
     args = %W[
