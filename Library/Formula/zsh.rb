@@ -18,6 +18,10 @@ class Zsh < Formula
 
   option 'disable-etcdir', 'Disable the reading of Zsh rc files in /etc'
 
+  def patches
+    "https://raw.github.com/gist/1403346/02b0d9a745ca323e2b80891a1d3231c7db5285c0/zsh-utf8mac-completion.patch"
+  end
+
   def install
     args = %W[
       --prefix=#{prefix}
